@@ -1,4 +1,5 @@
 class MoviesController < ApplicationController
+  
 
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
@@ -11,9 +12,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-	@movies = Movie.order(params[:sort])
-	@sortby = params[:sort]
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    @sortby = params[:sort]
+    if (params[:ratings] != nil)
+	  @movies = Movie.where(rating: params[:ratings].keys).order(params[:sort])
+	  @checked = params[:ratings].keys
+    else
+      @movies = Movie.order(params[:sort])
+      @checked = @all_ratings
+    end
   end
+  
   
   def new
     # default: render 'new' template
